@@ -12,13 +12,18 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from webdriver_manager.chrome import ChromeDriverManager
 
-# Cài Google Chrome nếu chưa có
-if not os.path.exists("/usr/bin/google-chrome"):
+# Tự giải nén Chrome vào thư mục tạm nếu chưa có
+CHROME_BIN = "/tmp/chrome/google-chrome"
+
+if not os.path.exists(CHROME_BIN):
     subprocess.run([
         "bash", "-c",
         """
-        wget -q -O /tmp/chrome.deb https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb && \
-        apt update && apt install -y /tmp/chrome.deb
+        mkdir -p /tmp/chrome &&
+        wget -q -O /tmp/chrome/chrome.zip https://storage.googleapis.com/chromium-browser-snapshots/Linux_x64/1181205/chrome-linux.zip &&
+        unzip /tmp/chrome/chrome.zip -d /tmp/chrome &&
+        mv /tmp/chrome/chrome-linux/* /tmp/chrome &&
+        chmod +x /tmp/chrome/google-chrome
         """
     ])
 
@@ -61,7 +66,7 @@ if uploaded_file:
             status_placeholder = st.empty()
 
             chrome_options = Options()
-            chrome_options.binary_location = "/usr/bin/google-chrome"
+            chrome_options.binary_location = "/tmp/chrome/google-chrome"
             chrome_options.add_argument("--headless")
             chrome_options.add_argument("--no-sandbox")
             chrome_options.add_argument("--disable-dev-shm-usage")
