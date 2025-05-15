@@ -3,3 +3,7 @@ selenium
 webdriver-manager
 pandas
 openpyxl
+pandas
+streamlit
+requests
+beautifulsoup4
