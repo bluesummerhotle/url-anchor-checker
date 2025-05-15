@@ -2,6 +2,8 @@ import pandas as pd
 import streamlit as st
 from datetime import datetime
 import time
+import os
+import subprocess
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
@@ -9,6 +11,16 @@ from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from webdriver_manager.chrome import ChromeDriverManager
+
+# Cài Google Chrome nếu chưa có
+if not os.path.exists("/usr/bin/google-chrome"):
+    subprocess.run([
+        "bash", "-c",
+        """
+        wget -q -O /tmp/chrome.deb https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb && \
+        apt update && apt install -y /tmp/chrome.deb
+        """
+    ])
 
 st.set_page_config(page_title="URL & Anchor Validator", layout="wide")
 st.title("🔍 Google Sheet Style - URL & Anchor Checker (Selenium Mode)")
@@ -49,7 +61,7 @@ if uploaded_file:
             status_placeholder = st.empty()
 
             chrome_options = Options()
-            chrome_options.binary_location = "/usr/bin/chromium"
+            chrome_options.binary_location = "/usr/bin/google-chrome"
             chrome_options.add_argument("--headless")
             chrome_options.add_argument("--no-sandbox")
             chrome_options.add_argument("--disable-dev-shm-usage")
